@@ -1,0 +1,205 @@
+﻿
+@* Transfer to bank modal partial view *@
+
+@model Fedco.PHED.Agent.management.Web.ViewModels.TransferViewModel
+@{
+
+
+  ViewBag.Title = "Reversal Fund";
+
+}
+@if ((int)Session["UserTypeId"] == 1)
+{
+  Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+else
+{
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="btn-group btn-breadcrumb" style="margin-bottom:5px;width:100%">
+  @if ((int)Session["UserTypeId"] == 1)
+  {
+    <a href="@Url.Action("Index", "Admin")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  }
+  else
+  {
+    <a href="@Url.Action("Home", "Account")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  }
+
+  <a href="#" class="btn btn-default" style="width:97%;text-align:left">Reversal Fund</a>
+
+</div>
+@using (Html.BeginForm("ReversalFromAgent", "Transaction"))
+{
+  @Html.AntiForgeryToken()
+
+  <div style="padding-left:30%">
+    <div class="card" style="margin-right:30%">
+      <div class="card-header">
+          <strong>Reversal Fund</strong>
+      </div>
+      <div class="card-body ">
+        <div class="form-horizontal">
+
+
+          @if (Session["regError"] != null)
+          {
+            @:<div class="text-center alert alert-danger">
+              @:<p>@Session["regError"]</p>
+            @:</div>
+            Session["regError"] = null;
+          }
+
+          @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+          <div class="form-group">
+
+
+            <div class="col-sm-6">
+              @Html.DisplayNameFor(model => model.Agent.AgentCode)
+              @Html.DisplayFor(model => model.Agent.AgentCode, new { htmlAttributes = new { @type = "name" } })
+              @Html.HiddenFor(model => model.Agent.AgentCode)
+              @Html.HiddenFor(model => model.Agent.AgentId)
+            </div>
+          </div>
+          <div class="form-group">
+
+
+            <div class="col-sm-6">
+              @Html.DisplayNameFor(model => model.Agent.AgentName)
+              @Html.DisplayFor(model => model.Agent.AgentName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Agent Name", @type = "name", @autocomplete = "new-password" } })
+              @Html.HiddenFor(model => model.Agent.AgentName)
+            </div>
+          </div>
+          <div class="form-group">
+
+
+            <div class="col-sm-6">
+              @Html.DisplayNameFor(model => model.Agent.RegistartionNumber)
+              @Html.DisplayFor(model => model.Agent.RegistartionNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Registartion Number", @type = "name", @autocomplete = "new-password" } })
+
+            </div>
+          </div>
+          <div class="form-group">
+
+            <div class="col-sm-6 editor-field">
+              @Html.DisplayNameFor(model => model.Agent.Balance)
+              @Html.DisplayFor(model => model.Agent.Balance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Agent Code", @type = "number", @autocomplete = "new-password" } })
+
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <div class="col-sm-8" >
+
+              @Html.DisplayNameFor(model => model.Agent.Commission)
+              @Html.HiddenFor(model => model.Agent.Commission)
+              @Html.EditorFor(model => model.Agent.Commission, new { htmlAttributes = new { @placeholder = "Commission", @type = "number", @autocomplete = "new-password", @id = "txtComission" } })
+              @Html.ValidationMessageFor(model => model.Agent.Commission, "", new { @class = "text-danger" })
+
+            </div>
+
+          </div>
+          @if (ViewBag.Admin != true)
+          {
+            <div class="form-group">
+              <div class="col-sm-7">
+                <label>My Balance :</label>
+                <span id="userBalance">&#8358; @Convert.ToDecimal(ViewBag.AgentBalance).ToString("#,##0.00")</span>
+
+              </div>
+
+            </div>
+          }
+
+          <div class="form-group">
+            <div class="col-sm-6">
+              <label id="lblCommission">Commission Amount :</label>
+              <span id="lblCommissionValue"></span>
+
+            </div>
+
+          </div>
+          <div class="form-group">
+            <div class="col-sm-6">
+              @Html.LabelFor(model => model.TransferAmount)
+
+              @Html.EditorFor(model => model.TransferAmount, new { htmlAttributes = new { @id = "txt_Transaction", @placeholder = "Amount", @type = "number", @autocomplete = "new-password" } })
+
+              @Html.ValidationMessageFor(model => model.TransferAmount, "", new { @class = "text-danger" })
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="form-group">
+
+          <input type="submit" value="Submit" class="btn btn-default pull-right" id="btnSubmit" />
+
+          @Html.ActionLink("Cancel", "TransactionList", "Transaction", null, new { @class = "btn btn-default pull-right btnTransactionCancel" })
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+  <script src="~/Scripts/jquery.validate.min.js"></script>
+  <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}
+<script type="text/javascript">
+
+  var cookieUserType = getCookie("UserType");
+
+  $('#txt_Transaction').keyup(function () {
+    transactionAmount = $('#txt_Transaction')[0].value;
+    commissionPercentage = (parseFloat($('#txt_Transaction')[0].value) / 100) * parseFloat($('#txtComission')[0].value);
+    commissionPercentage = commissionPercentage == NaN ? 0 : commissionPercentage;
+    $('#lblCommissionValue')[0].innerHTML = commissionPercentage.toFixed(2);
+    if ($("#userBalance")[0] != null) {
+      var mybalance = parseFloat($("#userBalance")[0].innerText);
+
+      if ((parseFloat(transactionAmount) + parseFloat(commissionPercentage)) > mybalance) {
+        alert("The transfer amount is greater then your balance");
+        $('#txt_Transaction')[0].value = 0;
+        return false;
+      }
+
+    }
+  });
+
+  $("#btnSubmit").click(function () {
+    transactionAmount = $('#txt_Transaction')[0].value;
+    commissionPercentage = (parseFloat($('#txt_Transaction')[0].value) / 100) * parseFloat($('#txtComission')[0].value);
+    commissionPercentage = commissionPercentage == NaN ? 0 : commissionPercentage;
+    $('#lblCommissionValue')[0].innerHTML = commissionPercentage.toFixed(2);
+    if ($("#userBalance")[0] != null) {
+      var mybalance = parseFloat($("#userBalance")[0].innerText);
+
+      if ((parseFloat(transactionAmount) + parseFloat(commissionPercentage)) > mybalance) {
+        alert("The transfer amount is greater then your balance");
+        $('#txt_Transaction')[0].value = 0;
+        return false;
+      }
+
+    }
+    if (confirm("Are you sure you want to submit details provided?")) {
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  });
+  $(".btnTransactionCancel").click(function () {
+    if (confirm("Are you sure want to Cancel the provided inputs?")) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  });
+</script>

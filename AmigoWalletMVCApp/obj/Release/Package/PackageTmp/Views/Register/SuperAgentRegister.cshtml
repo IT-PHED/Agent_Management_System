@@ -1,0 +1,269 @@
+@* User registration page *@
+
+@model Fedco.PHED.Agent.management.ViewModels.UserViewModel
+
+@{
+  /**/
+
+  /**/
+
+  ViewBag.Title = "Agent Creation";
+  if (Model.User.UserTypeId == 1)
+  {
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+  }
+  else
+  {
+    Layout = "~/Views/Shared/_Layout.cshtml";
+  }
+
+}
+<div class="btn-group btn-breadcrumb col-md-12" style="margin-bottom:5px;">
+  @if ((int)Session["UserTypeId"] == 1)
+  {
+    <a href="@Url.Action("Index", "Admin")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  }
+  else
+  {
+    <a href="@Url.Action("Home", "Account")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  }
+
+  <a href="#" class="btn btn-default" style="width:97%;text-align:left">Agent Creation</a>
+
+</div>
+<link href="~/Content/style1.css" rel="stylesheet" />
+@using (Html.BeginForm("RegisterUser", "Register", FormMethod.Post, new { id = "registerform", enctype = "multipart/form-data" }))
+{
+  @Html.AntiForgeryToken()
+  <div style="padding-left:30%">
+    <div class="card" style="margin-right:30%">
+      <div class="card-header">
+        <strong>Agent Creation</strong>
+      </div>
+      <div class="card-body ">
+        @if (ViewBag.ErrorMessage != null)
+        {
+          @:<div class="col-md-offset-4 col-md-4 text-center alert alert-danger">
+            @:<p>@ViewBag.ErrorMessage</p>
+          @:</div>
+        }
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class='form-group'>
+          @Html.Label("User Type")
+
+          <div>
+            @Html.DropDownListFor(model => model.User.UserTypeId, new SelectList(Model.userTypes, "Id", "userType"), "Select User Type", new { @class = "drop-control", id = "userTypeId" })
+            @Html.ValidationMessageFor(model => model.User.UserTypeId)
+          </div>
+        </div>
+        <div class="form-group">
+          @Html.LabelFor(model => model.User.Name, new { htmlAttributes = new { @class = "col-sm-4 col-sm-offset-2 col-form-label" } })
+
+          <div class="editor-field">
+            @Html.EditorFor(model => model.User.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @type = "name", @autocomplete = "new-password", id = "txtUserName" } })
+            @Html.ValidationMessageFor(model => model.User.Name, "", new { @class = "text-danger" })
+          </div>
+        </div>
+        <div class="form-group">
+          @Html.LabelFor(model => model.Agent.AgentName, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+
+          <div class="editor-field">
+            @Html.EditorFor(model => model.Agent.AgentName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Agent Name", @type = "name", @autocomplete = "new-password" } })
+            @Html.ValidationMessageFor(model => model.Agent.AgentName, "", new { @class = "text-danger" })
+          </div>
+        </div>
+        <div class="form-group">
+          @Html.LabelFor(model => model.Agent.RegistartionNumber, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+
+          <div class="editor-field">
+            @Html.EditorFor(model => model.Agent.RegistartionNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Registartion Number", @type = "name", @autocomplete = "new-password" } })
+            @Html.ValidationMessageFor(model => model.Agent.RegistartionNumber, "", new { @class = "text-danger" })
+          </div>
+        </div>
+        <div class="form-group">
+          @Html.LabelFor(model => model.Agent.AgentCode, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+
+          <div class="editor-field">
+            @Html.EditorFor(model => model.Agent.AgentCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Agent Code", @type = "name", @autocomplete = "new-password", disabled = "true" } })
+            @Html.ValidationMessageFor(model => model.Agent.AgentCode, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Agent.AgentCode)
+          </div>
+        </div>
+        @if (Model.User.UserTypeId != 1)
+        {
+          <div class="form-group">
+            @Html.LabelFor(model => model.Agent.Balance)
+            <span>@ViewBag.ViewBalance</span>
+
+
+          </div>
+        }
+
+        <div>
+          <div class="form-group">
+            @Html.LabelFor(model => model.Agent.Commission, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+            <div class="editor-field">
+              @Html.EditorFor(model => model.Agent.Commission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Commission", @type = "number", @autocomplete = "new-password" } })
+              @Html.ValidationMessageFor(model => model.Agent.Commission, "", new { @class = "text-danger" })
+            </div>
+          </div>
+
+        </div>
+        @if ((int)Session["UserTypeId"] == 1)
+        {
+          <div class="form-group">
+            @Html.LabelFor(model => model.Agent.SecurityDeposit, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+
+            <div class="editor-field">
+              @Html.EditorFor(model => model.Agent.SecurityDeposit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Security Deposit Number", @autocomplete = "new-password", id = "txtMobileNumber" } })
+              @Html.ValidationMessageFor(model => model.Agent.SecurityDeposit, "", new { @class = "text-danger" })
+            </div>
+          </div>
+          <div class="form-group">
+            <span>Supporting Document(Accept Only Pdf):</span>
+            @Html.TextBox("file", "", new { type = "file", accept = ".pdf" })
+          </div>
+        }
+        else
+        {
+          @Html.HiddenFor(model=> model.Agent.SecurityDeposit, new { @Id = "hiddenSelectedRegions" })
+        }
+
+        <div class="form-group">
+          @Html.LabelFor(model => model.User.EmailId, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+
+          <div class="editor-field">
+            @Html.EditorFor(model => model.User.EmailId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email Address", @autocomplete = "new-password", id = "txtEmail" } })
+            @Html.ValidationMessageFor(model => model.User.EmailId, "", new { @class = "text-danger" })
+          </div>
+        </div>
+
+        <div class="form-group">
+          @Html.LabelFor(model => model.User.MobileNumber, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+
+          <div class="editor-field">
+            @Html.EditorFor(model => model.User.MobileNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile Number", @autocomplete = "new-password", id = "txtMobileNumber" } })
+            @Html.ValidationMessageFor(model => model.User.MobileNumber, "", new { @class = "text-danger" })
+          </div>
+        </div>
+
+
+
+
+
+      </div>
+      <div class="card-footer">
+        <div class="form-group">
+          <div class="col-m-6" style="text-align:right;margin-left:-20px">
+            @if ((int)Session["UserTypeId"] == 1)
+            {
+              @Html.ActionLink("Cancel", "Index", "Admin", null, new { @class = "btn btn-primary cancelButton" })
+            }
+            else
+            {
+              @Html.ActionLink("Cancel", "Home", "Account", null, new { @class = "btn btn-primary cancelButton" })
+            }
+            <input type="submit" value="Add Agent" class="btn btn-primary" id="btnSubmit" />
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+ 
+}
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript">
+  $(".cancelButton").click(function () {
+    if (confirm("Are you sure want to Cancel the provided inputs?")) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  });
+  var userNameCount = 1;
+  var userEmailCount = 1;
+  var userMobileCount = 1;
+
+  $("#txtUserName").focusout(function () {
+    var userName = $("#txtUserName").val();
+    $.get('@Url.Action("ValidateUserName", "Register", null, Request.Url.Scheme)' + '?userName=' + userName, function (data) {
+      if (data != null && data > 0) {
+        alert("User name: " + userName + " already exists.");
+        $("#txtUserName").val('');
+        $("#txtUserName").focus();
+        return false;
+      }
+      else {
+        userNameCount = 0;
+      }
+    }).fail(function () {
+
+    });
+  });
+
+  $("#txtMobileNumber").focusout(function () {
+    var userMobile = $("#txtMobileNumber").val();
+    $.get('@Url.Action("ValidateMobile", "Register", null, Request.Url.Scheme)' + '?mobile=' + userMobile, function (data) {
+      if (data != null && data > 0) {
+        alert("Mobile :" + userMobile + "already exists.");
+        $("#txtMobileNumber").val('');
+        $("#txtMobileNumber").focus();
+        return false;
+      }
+      else {
+        userMobileCount = 0;
+      }
+    }).fail(function () {
+
+    });
+  });
+
+  $("#txtEmail").focusout(function () {
+       userMobileCount = 0;
+         var userEmail = $("#txtEmail").val();
+      $.get('@Url.Action("ValidateEmail", "Register", null, Request.Url.Scheme)' + '?email=' + userEmail, function (data) {
+
+      if (data != null && data > 0) {
+        alert("Email Address :" + userEmail + "already exists.");
+        $("#txtEmail").val('');
+        $("#txtEmail").focus();
+        return false;
+      }
+      else {
+        userEmailCount = 0
+      }
+      }).fail(function () {
+
+      });
+  });
+
+
+  $("#btnSubmit").click(function () {
+
+   
+    if (confirm("Are you sure you want to submit details provided?")) {
+      if (userNameCount == 0 && userMobileCount == 0 && userEmailCount == 0) {
+
+        $('form').submit();
+
+
+      }
+    }
+    else {
+      return false;
+    }
+
+
+  });
+
+</script>

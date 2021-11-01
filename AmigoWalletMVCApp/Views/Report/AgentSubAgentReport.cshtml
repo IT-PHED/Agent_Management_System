@@ -1,0 +1,369 @@
+﻿@model IEnumerable<Fedco.PHED.Agent.management.Models.UserTransaction>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@if ((int)Session["UserTypeId"] == 1)
+{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+else
+{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Scripts.Render("~/bundles/dataTables", "~/bundles/tableTools")
+
+<div class="btn-group btn-breadcrumb" style="margin-bottom:5px">
+    @if ((int)Session["UserTypeId"] == 1)
+    {
+        <a href="@Url.Action("Index", "Admin")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+    }
+    else
+    {
+        <a href="@Url.Action("Home", "Account")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+    }
+
+    <a href="#" class="btn btn-default">Agent Sub Agent Funding</a>
+
+</div>
+<div style="width:99%">
+
+    <input type="hidden" id="hiddenLoginId" value="@Session["LoginUserId"]" />
+    <input type="hidden" id="hiddenAgentId" value="@Session["AgentId"]" />
+    <input type="hidden" id="hiddenSuperAgentId" value="@Session["SuperAgentId"]" />
+    <input type="hidden" id="hiddenSubAgentId" value="@Session["SubAgentId"]" />
+    <div class='insideRow'>
+        <div class="transeditor-label">
+
+            @if ((int)Session["UserTypeId"] == 1)
+            {
+                <span id="date-label-from" style="padding-left:10px" class="date-label">Super Agent: </span>
+                <select id="drpSuperAgents" name="drpSuperAgents" class="drop-controlTrns"></select>
+                <span id="date-label-from" style="padding-left:10px" class="date-label">Agent: </span>
+                <select id="drpAgents" name="drpAgents" class="drop-controlTrns"></select>
+                <span id="date-label-from" style="padding-left:10px" class="date-label">Sub Agent: </span>
+                <select id="drpSubAgents" name="drpSubAgents" class="drop-controlTrns"></select>
+            }
+            else if ((int)Session["UserTypeId"] == 2)
+            {
+                <span id="date-label-from" style="padding-left:10px" class="date-label">Agent: </span>
+                <select id="drpAgents" name="drpAgents"></select>
+                <span id="date-label-from" style="padding-left:10px" class="date-label">Sub Agent: </span>
+                <select id="drpSubAgents" name="drpSubAgents"></select>
+            }
+            else if ((int)Session["UserTypeId"] == 3)
+            {
+                <span id="date-label-from" style="padding-left:10px" class="date-label">Sub Agent: </span>
+                <select id="drpSubAgents" name="drpSubAgents"></select>
+            }
+            <span id="date-label-from" class="date-label">From: </span>
+            <input class="date_range_filter date" type="text" style="width:80px" id="datepicker_from" />
+
+            <span id="date-label-from" class="date-label">To: </span>
+            <input class="date_range_filter date" style="width:80px" type="text" id="datepicker_to" />
+            <input type="button" id="btnSearch" value="Search" class="btn btn-primary" />
+
+        </div>
+        <div class="transeditor-label">
+
+        </div>
+
+    </div>
+    <div class='insideRow' style="width:80%;margin-top:10px">
+        <table class="table" id="agentTable">
+            <thead>
+                <tr>
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Agent Code
+                    </th>
+                    <th>
+                        Agent Name
+                    </th>
+                    <th>
+                        Transaction Amount
+                    </th>
+                    <th>
+                        Sub Agent Code
+                    </th>
+                    <th>
+                        Sub Agent Name
+                    </th>
+                    <th>
+                        Transaction Amount
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+<script src="~/Scripts/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/buttons.bootstrap4.min.js"></script>
+<script src="~/Scripts/jszip.min.js"></script>
+<script src="~/Scripts/pdfmake.min.js"></script>
+<script src="~/Scripts/vfs_fonts.js"></script>
+<script src="~/Scripts/buttons.html5.min.js"></script>
+<script src="~/Scripts/buttons.print.min.js"></script>
+<script src="~/Scripts/moment.min.js"></script>
+<script src="~/Scripts/datetime-moment.js"></script>
+<link rel="stylesheet" href="~/Content/dataTables.bootstrap4.min.css" />
+<script type="text/javascript">
+    $(function () {
+        $.noConflict();
+        window.page.showProgress();
+        $.fn.dataTable.moment('MM/DD/YYYY', 'en-US');
+        var table = $('#agentTable').DataTable({
+            lengthChange: false,
+            processing: true, // for show progress bar
+            serverSide: false, // for process server side
+            filter: true, // this is for disable filter (search box)
+            orderMulti: false, // for disable multiple column at once
+            buttons: ['excel', 'pdf', 'pageLength'],
+            "scrollX": true,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+
+            "columns": [
+                {
+                    data: null, render: function (data) {
+                        var date = new Date(data.TransactionDateTime);
+                        var pattern = /Date\(([^)]+)\)/;
+                        var results = pattern.exec(data.TransactionDateTime);
+                        var dt = new Date(parseFloat(results[1]));
+
+                        return window.moment(dt).format('MM/DD/YYYY');
+                    }
+                },
+                { "data": "AgentCode", "name": "Agent Code", "title": "Agent Code", "autoWidth": true },
+                { "data": "AgentName", "name": "Agent Name", "autoWidth": true },
+                { "data": "TransactionAmount", "name": "Transaction Amount", "autoWidth": true, render: $.fn.dataTable.render.number(',', '.', 0, '') },
+                { "data": "SubAgentCode", "name": "Sub Agent Code", "title": "Agent Code", "autoWidth": true },
+                { "data": "SubAgentName", "name": "Sub Agent", "autoWidth": true },
+                { "data": "SubAgentTransactionAmount", "name": "Transaction Amount", "autoWidth": true, render: $.fn.dataTable.render.number(',', '.', 0, '') }
+            ],
+            order: [[0, 'desc']]
+        });
+
+        table.buttons().container()
+            .appendTo('#agentTable_wrapper .col-md-6:eq(0)');
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [month, day, year].join('/');
+        }
+        // Date range filter
+        minDateFilter = "";
+        maxDateFilter = "";
+        var currentDate = new Date();
+
+        minDateFilter = new Date().setDate(currentDate.getDate() - 90);
+        maxDateFilter = new Date().setDate(currentDate.getDate());
+
+        $("#datepicker_from").datepicker({
+            showOn: "both",
+            buttonImage: '@Url.Content("~/Images/calendar.png")',
+            buttonImageOnly: true,
+            changeYear: true,
+            changeMonth: true,
+            buttonText: "",
+            "onSelect": function (date) {
+                minDateFilter = new Date(date).getTime();
+
+            }
+        }).keyup(function () {
+            minDateFilter = new Date(this.value).getTime();
+            });
+
+          $("#datepicker_to").datepicker({
+            showOn: "both",
+            buttonImage: '@Url.Content("~/Images/calendar.png")',
+            buttonImageOnly: true,
+            changeYear: true,
+            changeMonth: true,
+            buttonText: "",
+            "onSelect": function (date) {
+                maxDateFilter = new Date(date).getTime();
+
+            }
+        }).keyup(function () {
+            maxDateFilter = new Date(this.value).getTime();
+        });
+
+          $("#datepicker_from").datepicker("setDate", formatDate(new Date(minDateFilter)));
+          $("#datepicker_to").datepicker("setDate", formatDate(new Date(maxDateFilter)));
+
+          $('#btnSearch').click(function () {
+              var subagentId = $('#drpSubAgents :selected').val() == "" || $('#drpSubAgents :selected').val() == "-1" || $('#drpSubAgents :selected').val()== undefined ? 0 : $('#drpSubAgents :selected').val();
+              var agentId = $('#drpAgents :selected').val() == "" || $('#drpAgents :selected').val() == "-1" || $('#drpAgents :selected').val() == undefined ? 0 : $('#drpAgents :selected').val();
+              var spragentId = $('#drpSuperAgents :selected').val() == "" || $('#drpSuperAgents :selected').val() == "-1" || $('#drpSuperAgents :selected').val() == undefined? 0 : $('#drpSuperAgents :selected').val();
+              window.page.showProgress();
+              $.ajax({
+                type: 'GET',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("AgentSubAgentReportByFilters", "Report")?startDate=' + formatDate(new Date(minDateFilter)) + '&EndDate=' + formatDate(new Date(maxDateFilter)) + '&superAgentId='+spragentId+'&agentId='+agentId+'&subAgentId=' + subagentId,
+                "dataSrc": '',
+                success: function (response) {
+                    table.rows().clear().draw();
+                    table.rows.add(response); // Add new data
+                    table.columns.adjust().draw();
+                    window.page.hideProgress();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    window.page.hideProgress();
+                }
+            });
+          });
+          $('#drpSuperAgents').empty();
+          $('#drpAgents').empty();
+          $('#drpSubAgents').empty();
+
+          $('#drpSuperAgents').append('<option value = "-1">Select Super Agents</option>');
+          $('#drpAgents').append('<option value = "-1">Select Agents</option>');
+          $("#drpSubAgents").append('<option value = "">Select Sub Agents</option>');
+          window.page.showProgress();
+          $.ajax({
+              type: 'GET',
+              contentType: "application/json; charset=utf-8",
+              url: '@Url.Action("GetSuperAgents", "Transaction")',
+              data: null,
+              success: function (data) {
+                  $('#drpSuperAgents').empty();
+                  $('#drpSuperAgents').append('<option value = "-1">Select Super Agents</option>');
+                  $('#drpSuperAgents').val('');
+                  if (data != null) {
+                      $.each(data, function () {
+                          $("#drpSuperAgents").append("<option value = " + this.AgentId + ">" + this.AgentName + "</option>");
+                      });
+                  }
+                  window.page.hideProgress();
+              },
+              error: function (xhr, ajaxOptions, thrownError) {
+                  window.page.hideProgress();
+              },
+              dataType: "json"
+          });
+          window.page.showProgress();
+         $.ajax({
+              type: 'GET',
+              contentType: "application/json; charset=utf-8",
+              url: '@Url.Action("GetAgents", "Transaction")?agentID=' + $('#hiddenSuperAgentId').val(),
+              data: null,
+              success: function (data) {
+                  $('#drpAgents').empty();
+                  $('#drpAgents').append('<option value = "-1">Select Agents</option>');
+                  $('#drpAgents').val('');
+                  if (data != null) {
+                      $.each(data, function () {
+                          $("#drpAgents").append("<option value = " + this.AgentId + ">" + this.AgentName + "</option>");
+                      });
+                  }
+                  window.page.hideProgress();
+              },
+              error: function (xhr, ajaxOptions, thrownError) {
+                  window.page.hideProgress();
+              },
+              dataType: "json"
+          });
+         window.page.showProgress();
+         $.ajax({
+              type: 'GET',
+              contentType: "application/json; charset=utf-8",
+              url: '@Url.Action("GetSubAgents", "Transaction")?agentID=' + $('#hiddenAgentId').val(),
+              data: null,
+              success: function (data) {
+                  $('#drpSubAgents').empty();
+                  $('#drpSubAgents').append('<option value = "-1">Select Sub Agents</option>');
+                  $('#drpSubAgents').val('');
+                  if (data != null) {
+                      $.each(data, function () {
+
+                          $("#drpSubAgents").append("<option value = " + this.AgentId + ">" + this.AgentName + "</option>");
+                      });
+                  }
+                  window.page.hideProgress();
+              },
+              error: function (xhr, ajaxOptions, thrownError) {
+                  window.page.hideProgress();
+              },
+              dataType: "json"
+         });
+
+         $("#drpAgents").change(function () {
+             window.page.showProgress();
+             var agentId = $('#drpAgents :selected').val();
+             if (agentId >= 0) {
+                 $('#drpSubAgents').empty();
+                 $('#drpSubAgents').append('<option value = "-1">Select Sub Agents</option>');
+                 $('#drpSubAgents').val('');
+                 $.ajax({
+                     type: 'GET',
+                     contentType: "application/json; charset=utf-8",
+                     url: '@Url.Action("GetSubAgents", "Transaction")?agentID=' + agentId,
+                     data: null,
+                     success: function (data) {
+                         if (data != null) {
+                             $.each(data, function () {
+
+                                 $("#drpSubAgents").append("<option value = " + this.AgentId + ">" + this.AgentName + "</option>");
+                             });
+                         }
+                         window.page.hideProgress();
+                     },
+                     error: function (xhr, ajaxOptions, thrownError) {
+                         window.page.hideProgress();
+                     },
+                     dataType: "json"
+                 });
+
+
+             }
+         });
+
+            $("#drpSuperAgents").change(function () {
+                window.page.showProgress();
+                var agentId = $('#drpSuperAgents :selected').val();
+                if (agentId >= 0) {
+                    $('#drpAgents').empty();
+                    $('#drpAgents').append('<option value = "-1">Select Agents</option>');
+                    $('#drpAgents').val('');
+                 $.ajax({
+                     type: 'GET',
+                     contentType: "application/json; charset=utf-8",
+                     url: '@Url.Action("GetAgents", "Transaction")?agentID=' + agentId,
+                     data: null,
+                     success: function (data) {
+                         if (data != null) {
+                             $.each(data, function () {
+                                 $("#drpAgents").append("<option value = " + this.AgentId + ">" + this.AgentName + "</option>");
+                             });
+                         }
+                         window.page.hideProgress();
+                     },
+                     error: function (xhr, ajaxOptions, thrownError) {
+                        window.page.hideProgress();
+                     },
+                     dataType: "json"
+                 });
+             }
+         });
+
+    });
+
+</script>
+
+

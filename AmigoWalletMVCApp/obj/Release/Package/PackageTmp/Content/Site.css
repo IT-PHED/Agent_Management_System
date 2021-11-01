@@ -1,0 +1,259 @@
+﻿body {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    font-family: 'Ubuntu', sans-serif;
+}
+p,a,span,ul,li,td,tr,small,big,strong,.btn {
+    font-family: 'Ubuntu', sans-serif;
+}
+h1,h2,h3,h4,h5,h6 {
+    font-family: 'Baloo Bhaijaan', sans-serif;
+}
+
+.logo {
+    margin-top: -5px;
+    width: 50px;
+}
+a:hover, .glyphicon:hover {
+    opacity:0.7;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.thick-text {
+    font-family: 'Baloo Bhaijaan', sans-serif;
+}
+.lightorange {
+    background-color:#FFB139;
+}
+
+.text-v-big {
+    font-size: 100px;
+}
+
+
+.text-big {
+    font-size: 70px;
+}
+
+.text-med {
+    font-size: 40px;
+}
+
+.big-button {
+    padding: 10px 50px 10px 50px;
+    border-radius: 30px;
+    width: 300px;
+    margin:5px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+}
+
+tr:hover {
+    border-left: solid;
+    border-width: 5px;
+    border-color: #FF3B0C;
+}
+
+tr {
+    border-left: solid;
+    border-width: 5px;
+    border-color: transparent;
+}
+
+.cancel_btn {
+    width: 85px;
+    height: 31px;
+    cursor: pointer;
+    display: inline-block;
+    float: right;
+    background: url(../Images/Sprite2.png) -5px -748px no-repeat;
+    padding: 3px;
+    padding-top: 0px;
+    padding-top: 3px \9;
+    padding-left: 25px;
+    font-size: 14px;
+    color: #FFF;
+    border: none;
+}
+
+.insideRow {
+    width: 98%;
+    padding: 1px;
+    border-bottom: #F0F0F0 solid 1px;
+    float: left;
+}
+
+.inside_dialog {
+    padding: 5px;
+    max-height: 600px;
+    overflow: auto;
+    margin-top: 20px;
+    font-family: Calibri;
+}
+
+.insideRow .editor-label, .insideRow .editor-field {
+    float: left;
+    min-height: 25px;
+    margin-top: 5px;
+}
+
+.insidePopupRow .editor-label {
+    float: left;
+    margin-top: 5px;
+    width: 130px;
+}
+
+.insideRow .editor-label {
+    width: 43%;
+    font-size: 13px;
+    padding-top: 10px;
+}
+
+.insideRow .transeditor-label {
+    width: 95%;
+    font-size: 13px;
+    padding-top: 5px;
+}
+
+.insideRow .aededitor-label {
+    width: 20%;
+    font-size: 13px;
+    padding-top: 10px;
+}
+
+.insideAEDDisplayRow .aededitor-label, .insideAEDDisplayRow .aededitor-field {
+    float: left;
+    min-height: 25px;
+    padding-top: 10px;
+    margin-left: 10px;
+}
+
+.insideRow .aededitor-field {
+    margin-right: 40px;
+}
+
+.insidePopupRow .editor-label {
+    font-size: 13px;
+}
+
+.videoRow .editor-label, .videoRow .editor-field {
+    float: left;
+    min-height: 25px;
+    margin-top: 5px;
+}
+
+.videoRow .editor-label {
+    width: 18%;
+    font-size: 13px;
+}
+
+.videoRow .editor-field {
+    width: 82%;
+}
+
+.videoRow .group_label {
+    width: 38%;
+    float: left;
+}
+
+.insideRow .group_label {
+    width: 38%;
+    float: left;
+}
+
+.insideRow .editor-field.group_field {
+    width: 58%;
+    float: left;
+    position: relative;
+    left: 38px;
+    margin-bottom: 25px;
+}
+
+    .insideRow .editor-field.group_field .group_field {
+        position: relative;
+        left: 0px;
+    }
+
+.insideRow .editor-field {
+    width: 55%;
+}
+
+.insideRow .editor-field {
+    width: 55%;
+}
+
+.insideRow .editor-fieldMessage {
+    width: 78%;
+}
+
+.insidePopupRow .editor-field {
+    width: 100%;
+}
+
+.group_field .insideRow .editor-field {
+    width: 100%;
+}
+
+.insideRow .editor-field input[type="radio"] {
+    vertical-align: top;
+}
+
+.insideRow .editor-field textarea {
+    width: 80%;
+}
+
+.editor-label label {
+    font-size: 12px;
+    font-weight: normal;
+    color: #404040;
+    font-weight: bold;
+}
+.head_title {
+    padding: 0px;
+    margin: 0px;
+    border-bottom: solid 1px #666;
+    margin: 15px 0px;
+}
+
+.head_title_facilities {
+    padding: 0px;
+    margin: 0px;
+    margin: 15px 0px;
+}
+
+.head_title span {
+    margin-bottom: 10px;
+    padding: 2px;
+    background-color: #FFF;
+    position: relative;
+    top: 5px;
+    font-weight: bold;
+    color: #008DD2;
+}
+
+.head_title_facilities span {
+    margin-bottom: 10px;
+    padding: 2px;
+    background-color: #FFF;
+    position: relative;
+    top: 5px;
+    font-weight: bold;
+    color: #008DD2;
+}
+.info_icon, .txt_help {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    background: url(../Images/Sprite2.png) -10px -1034px no-repeat;
+    margin-left: 10px;
+    position: relative;
+    top: -5px;
+}

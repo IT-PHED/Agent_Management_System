@@ -1,0 +1,60 @@
+@* User registration page *@
+
+@{
+    /**/
+
+    /**/
+
+    ViewBag.Title = "Agent Creation";
+    if ((int)Session["UserTypeId"] == 1)
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+}
+<div class="btn-group btn-breadcrumb col-md-12" style="margin-bottom:5px">
+  @if ((int)Session["UserTypeId"] == 1)
+  {
+    <a href="@Url.Action("Index", "Admin")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  }
+  else
+  {
+    <a href="@Url.Action("Home", "Account")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  }
+
+  <a href="#" class="btn btn-default">Agent Creation Message</a>
+
+</div>
+<br />
+<div>@ViewBag.Message</div>
+ @if (ViewBag.Message != null)
+  {
+<script type="text/javascript">
+  setTimeout(function () {
+    if (Session["UserTypeId"] == 1)
+               {
+                 window.location = '@Url.Action("Index", "Admin")';
+               }
+               else if(Session["UserTypeId"] == 2)
+               {
+                 window.location = '@Url.Action("Home", "Account")';
+               }
+               else if(Session["UserTypeId"] == 3)
+               {
+                 window.location = '@Url.Action("Home", "Account")';
+               }
+  }, 2000);
+ 
+</script>
+  }
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+

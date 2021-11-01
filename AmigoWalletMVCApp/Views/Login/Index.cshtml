@@ -1,0 +1,72 @@
+﻿@model Fedco.PHED.Agent.management.Web.Models.LogOnModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Management System</title>
+
+    @Styles.Render("~/Content/themes/base/css", "~/Content/css")
+    @Scripts.Render("~/bundles/jquery", "~/bundles/modernizr", "~/bundles/jqueryui", "~/bundles/sitejs")
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+
+</head>
+<body>
+    <div class="row" style="height:500px">
+        @using (Html.BeginForm("Login", "Login"))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h3 style="text-align:center"><strong>PHED Agent Management System</strong></h3>
+
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="col-md-offset-4 col-md-4 text-center alert alert-danger">
+                       <p>@ViewBag.ErrorMessage</p>
+                        
+                    </div>
+                }
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="col-md-offset-4 col-md-4">
+                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @placeholder = "User Name", @type = "name", @autocomplete = "new-password" })
+                    @Html.ValidationMessageFor(model => model.UserName)
+                    <br />
+                </div>
+                <div class="col-md-offset-4 col-md-4">
+                    @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "Password", @autocomplete = "new-password" })
+                    @Html.ValidationMessageFor(model => model.Password)
+                    <br />
+                    <br />
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-4">
+                        <input type="submit" value="Log In" style="padding: 6px 7px;" class="btn btn-primary btn-block" />
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-offset-4 col-md-4 text-center">
+                @Html.ActionLink("Having trouble logging in ", "ForgotPassword", "Account")
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+</body>
+</html>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript">
+    localStorage.removeItem("selectedolditem");
+</script>

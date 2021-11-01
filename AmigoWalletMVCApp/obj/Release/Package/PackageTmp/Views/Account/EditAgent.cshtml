@@ -1,0 +1,156 @@
+@* User registration page *@
+
+@model Fedco.PHED.Agent.management.ViewModels.UserViewModel
+
+@{
+  /**/
+
+  /**/
+
+  ViewBag.Title = "Edit Agent";
+  if (Model.User.UserTypeId == 1)
+  {
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+  }
+  else
+  {
+    Layout = "~/Views/Shared/_Layout.cshtml";
+  }
+
+}
+<div class="btn-group btn-breadcrumb col-md-12" style="margin-bottom:5px;">
+  @if ((int)Session["UserTypeId"] == 1)
+  {
+    <a href="@Url.Action("Index", "Admin")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  }
+  else
+  {
+    <a href="@Url.Action("Home", "Account")" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  }
+
+  <a href="#" class="btn btn-default" style="width:97%;text-align:left">Edit Agent</a>
+
+</div>
+<link href="~/Content/style1.css" rel="stylesheet" />
+@using (Html.BeginForm("EditAgent", "Account", FormMethod.Post, new { id = "editform", enctype = "multipart/form-data" }))
+{
+  @Html.AntiForgeryToken()
+  <div style="padding-left:30%">
+    <div class="card" style="margin-right:30%">
+      <div class="card-header">
+        <strong>Edit Agent</strong>
+      </div>
+      <div class="card-body ">
+        @if (ViewBag.ErrorMessage != null)
+        {
+          @:<div class="col-md-offset-4 col-md-4 text-center alert alert-danger">
+            @:<p>@ViewBag.ErrorMessage</p>
+          @:</div>
+        }
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Agent.AgentName, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+                @Html.HiddenFor(model => model.Agent.AgentId)
+                @Html.HiddenFor(model => model.User.UserId)
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.Agent.AgentName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Agent Name", @type = "name", @autocomplete = "new-password" } })
+                    @Html.ValidationMessageFor(model => model.Agent.AgentName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+       
+        <div>
+          <div class="form-group">
+            @Html.LabelFor(model => model.Agent.Commission, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+            <div class="editor-field">
+              @Html.EditorFor(model => model.Agent.Commission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Commission", @type = "number", @autocomplete = "new-password" } })
+              @Html.ValidationMessageFor(model => model.Agent.Commission, "", new { @class = "text-danger" })
+            </div>
+          </div>
+
+        </div>
+     
+
+        <div class="form-group">
+          @Html.LabelFor(model => model.User.EmailId, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+
+          <div class="editor-field">
+            @Html.EditorFor(model => model.User.EmailId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email Address", @autocomplete = "new-password", id = "txtEmail" } })
+            @Html.ValidationMessageFor(model => model.User.EmailId, "", new { @class = "text-danger" })
+          </div>
+        </div>
+
+        <div class="form-group">
+          @Html.LabelFor(model => model.User.MobileNumber, new { htmlAttributes = new { @class = "col-sm-4 col-form-label" } })
+
+          <div class="editor-field">
+            @Html.EditorFor(model => model.User.MobileNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile Number", @autocomplete = "new-password", id = "txtMobileNumber" } })
+            @Html.ValidationMessageFor(model => model.User.MobileNumber, "", new { @class = "text-danger" })
+          </div>
+        </div>
+
+
+
+
+
+      </div>
+      <div class="card-footer">
+        <div class="form-group">
+          <div class="col-m-6" style="text-align:right;margin-left:-20px">
+            @if ((int)Session["UserTypeId"] == 1)
+            {
+              @Html.ActionLink("Cancel", "Index", "Admin", null, new { @class = "btn btn-primary cancelButton" })
+            }
+            else
+            {
+              @Html.ActionLink("Cancel", "Home", "Account", null, new { @class = "btn btn-primary cancelButton" })
+            }
+            <input type="submit" value="Update Agent" class="btn btn-primary" id="btnSubmit" />
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+ 
+}
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript">
+  $(".cancelButton").click(function () {
+    if (confirm("Are you sure want to Cancel the provided inputs?")) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  });
+ 
+
+
+  $("#btnSubmit").click(function () {
+
+   
+    if (confirm("Are you sure you want to submit details provided?")) {
+     
+
+        $('form').submit();
+
+
+      }
+    }
+    else {
+      return false;
+    }
+
+
+  });
+
+</script>

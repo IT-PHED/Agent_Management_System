@@ -1,0 +1,53 @@
+@model Fedco.PHED.Agent.management.Web.Models.RequestRecords
+@{
+  ViewBag.Title = "Request For Records";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<hr />
+<h2 class="text-center">Request For Records</h2>
+<hr />
+<br />
+@using (Html.BeginForm("GetRecords", "Account"))
+{
+  @Html.AntiForgeryToken()
+
+<div class="form-horizontal" style="height:400px;">
+  @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+  <div class='form-group row insideRow'>
+    @Html.LabelFor(model => model.Request, new { htmlAttributes = new { @class = "col-sm-4 col-sm-offset-2 col-form-label" } })
+    <div class="col-sm-6 editor-field" style="margin-left:15px">
+      @Html.TextAreaFor(model => model.Request, new { htmlAttributes = new { @class = "form-control ", @placeholder = "", @type = "name", @cols = 80, @rows = 10, @autocomplete = "new-password" } })
+      @Html.ValidationMessageFor(model => model.Request, "", new { @class = "text-danger" })
+    </div>
+
+  </div>
+
+  <div class="form-group row insideRow">
+    @Html.LabelFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "col-sm-4 col-sm-offset-2 col-form-label" } })
+
+    <div class="col-sm-6 editor-field" style="margin-left:8px">
+      @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control", id = "reqDate", @type = "date", @placeholder = "Start Date" } })
+      @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+    </div>
+  </div>
+  <div class="form-group row insideRow">
+    @Html.LabelFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "col-sm-4 col-sm-offset-2 col-form-label" } })
+
+    <div class="col-sm-6 editor-field" style="margin-left:12px">
+      @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control", id = "reqDate", @type = "date", @placeholder = "End Date" } })
+      @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-6" style="margin-left:100px">
+      @Html.ActionLink("Cancel", "List", "Admin", null, new { @class = "btn btn-primary" })
+      <input type="submit" value="Submit" class="btn btn-primary" />
+
+    </div>
+
+  </div>
+</div>
+}
+
+

@@ -1,0 +1,259 @@
+﻿@* Landing page layout *@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Management System</title>
+
+
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jquery", "~/bundles/modernizr", "~/bundles/jqueryui", "~/bundles/sitejs")
+   
+
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link href="~/Content/style1.css" rel="stylesheet" />
+    <link href="~/Content/theme.css" rel="stylesheet" />
+
+    <script src="~/Scripts/fontawesome.js" type="text/javascript"></script>
+    <!-- Font Awesome -->
+    <link href="~/Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+
+</head>
+<body>
+
+
+    <div class="navbar navbar-inverse">
+
+        <ul class="nav" style="color: #ffffff;width:85%"></ul>
+
+        <ul class="nav" style="color: #ffffff">
+
+            <li id="user" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span class="glyphicon glyphicon-user"></span> @Session["email"]
+                </a>
+                <ul style="padding-left:10px" class="dropdown-menu">
+
+                    <li><a href="@Url.Action("ChangePassword", "Account")"><span class="glyphicon glyphicon-edit"></span>&nbsp; Change Password</a></li>
+                    <li><a href="@Url.Action("Logout", "Login")"><span class="glyphicon glyphicon-log-out"></span>&nbsp; Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+
+
+
+
+
+    <div class="wrapper">
+
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <img src="~/Images/phedlogo.jpg" alt="...">
+            </div>
+            <ul class="list-unstyled components">
+                <li class="box-content bottom sidebar" id="homelink">
+
+                    <a href="@Url.Action("Home", "Account")"><i class="glyphicon glyphicon-home"></i> Dashboard</a>
+
+                </li>
+
+
+                @if ((int)Session["UserTypeId"] == 2)
+                {
+                    <li class="box-content bottom AgentCreate sidebar" id="agentlink">
+                        <a href="@Url.Action("SuperAgentRegister", "Register")"> <i class="fa fa-plus-square" aria-hidden="true"></i>  Add Agent</a>
+                    </li>
+                }
+                else if ((int)Session["UserTypeId"] == 3)
+                {
+                    <li class="box-content bottom AgentCreate sidebar" id="agentlink">
+                        <a href="@Url.Action("SuperAgentRegister", "Register")"> <i class="fa fa-plus-square" aria-hidden="true"></i>  Add Sub Agent</a>
+                    </li>
+                }
+
+
+                @if ((int)Session["UserTypeId"] != 4 && (int)Session["UserTypeId"] != 6)
+                {
+                    <li class="box-content bottom sidebar" id="agentslink">
+                        <a href="@Url.Action("Home", "Account")"> <i class="fa fa-users" aria-hidden="true"></i>  Agents</a>
+
+
+
+                    </li>
+                }
+
+                <li class="box-content bottom sidebar" id="transactionslink">
+                    <a href="@Url.Action("TransactionList", "Transaction")"> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  Transactions</a>
+
+                </li>
+                @if ((int)Session["UserTypeId"] == 2 || (int)Session["UserTypeId"] == 6)
+                {
+                    <li class="box-content bottom">
+
+                        <a href="#reportsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Reports</a>
+                        <ul class="collapse list-unstyled" id="reportsSubmenu">
+                            <li class="box-content bottom sidebar" id="acclink">
+                                @Html.ActionLink("Account Statement", "AccountStatement", "Report")
+                            </li>
+                            <li class="box-content bottom sidebar" id="cshrgtrlink">
+
+                                @Html.ActionLink("Cashier Register", "CashierRegister", "Report")
+                            </li>
+                            <li class="box-content bottom sidebar" id="dlymntlylink">
+                                @Html.ActionLink("Daily Monthly Report", "DailyMonthlyReport", "Report")
+
+                            </li>
+
+                            <li class="box-content bottom sidebar" id="subagntfundinglink">
+                                @Html.ActionLink("SubAgent Funding Report", "SubAgentFundingReport", "Report")
+                            </li>
+                            <li class="box-content bottom sidebar" id="accountlink">
+                                @Html.ActionLink("Inter Account", "InterAccount", "Report")
+                            </li>
+                            <li class="box-content bottom sidebar" id="agntsubagntlink">
+                                @Html.ActionLink("Agent & SubAgent Report", "AgentSubAgentReport", "Report")
+                            </li>
+                            <li class="box-content bottom sidebar" id="agntcollectionlink">
+                                @Html.ActionLink("Agent Collection Report", "AgentCollectionReport", "Report")
+                            </li>
+                            <li class="box-content bottom sidebar" id="fundinghistorylink">
+                                @Html.ActionLink("Funding History Report", "FundingHistoryReport", "Report")
+                            </li>
+                            <li class="box-content bottom sidebar" id="cmsrptlink">
+                                @Html.ActionLink("Commission Report", "CommissionReport", "Report")
+                            </li>
+
+
+                        </ul>
+                    </li>
+
+                }
+                @if ((int)Session["UserTypeId"] == 6)
+                {
+                    <li class="box-content bottom sidebar" id="auditlink">
+
+                        @Html.ActionLink("Audit Log", "Index", "Audit")
+                    </li>
+                }
+
+                    <li class="box-content bottom">
+                        @Html.ActionLink("Logout", "Logout", "Login")
+
+                    </li>
+
+                </ul>
+
+        </nav>
+        <!-- Page Content  -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="btn-group  col-md-12" style="margin-bottom:5px">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fa fa-align-left"></i>
+
+                    </button>
+
+                </div>
+
+            </nav>
+
+            @RenderBody()
+
+        </div>
+
+    </div>
+
+    <footer class="text-center">
+
+        <p>&copy; @DateTime.Now.Year - PHED Agent Management System</p>
+    </footer>
+
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function getCookie(Name, actualName) {
+            var Argument;
+            var ArgumetLength;
+            var CookieLength;
+            var EndString;
+            var i;
+            var j;
+
+            Argument = Name + "=";
+            ArgumentLength = Argument.length;
+            CookieLength = document.cookie.length;
+            i = 0;
+            while (i < CookieLength) {
+                j = i + ArgumentLength;
+                if (document.cookie.substring(i, j) == Argument) {
+                    EndString = document.cookie.indexOf(";", j);
+                    if (EndString == -1)
+                        EndString = document.cookie.length;
+                    return unescape(document.cookie.substring(j, EndString).replace(actualName, ''));
+                }
+                i = document.cookie.indexOf(" ", i) + 1;
+                if (i == 0)
+                    break;
+            }
+            return (null);
+        }
+
+
+        var cookieUserType = getCookie("UserType");
+        if (cookieUserType == "SUBAGENT") {
+            $("#ulsidemenu").hide();
+        }
+        $("#reportsSubmenu").on('click', function () {
+
+
+            var target = $(this).attr("id");
+            var isTargetExpanded = $(target).hasClass('in');
+            $('.show-in-md').addClass('collapse').removeClass('in'); // collapse all before expading clicked target
+
+            if (isTargetExpanded) {
+                $(target).addClass('collapse').removeClass("in"); // collapse clicked target
+            } else {
+                $(target).removeClass('collapse').addClass("in"); // expand clicked target
+            }
+            // localStorage.setItem("selectedolditem", id);
+
+        });
+        $('.sidebar').on('click', function () {
+            var id = $(this).attr("id");
+            $('#' + id).siblings().find(".active").removeClass("active");
+            $('#' + id).addClass("active");
+            localStorage.setItem("selectedolditem", id);
+
+        });
+        var selectedolditem = localStorage.getItem('selectedolditem');
+
+        if (selectedolditem != null || selectedolditem != undefined) {
+            $('#' + selectedolditem).siblings().find(".active").removeClass("active");
+            $('#' + selectedolditem).addClass("active");
+        } else {
+
+            $('#' + "homelink").addClass("active");
+            localStorage.setItem("selectedolditem", "homelink");
+        }
+
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    </script>
+    <div id="divProgressIndicator" class="roundCornerAll5">
+        <div class="contentb">
+            <div>
+                <span>Please wait...</span>
+                <br />
+                <img style="margin-top: 6px" src="@Url.Content("~/Images/loading_bar.gif")" width="245px" height="19" alt="" />
+            </div>
+        </div>
+    </div>
+</body>
+</html>

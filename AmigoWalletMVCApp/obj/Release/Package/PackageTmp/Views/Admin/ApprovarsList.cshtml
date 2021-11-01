@@ -1,0 +1,110 @@
+
+@model IEnumerable<Fedco.PHED.Agent.management.Web.Models.User>
+@{
+  ViewBag.Title = "Index";
+  Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div>
+
+  <table class="table table-striped table-bordered" style="width:99%" id="approvarTable">
+    <thead>
+      <tr>
+        <th>
+          User Id
+        </th>
+        <th>
+          User Name
+        </th>
+        <th>
+          Mobile Number
+        </th>
+        <th>
+          Emaid Address
+        </th>
+
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var item in ViewBag.approvars)
+      {
+        <tr>
+          <td>
+            @item.UserId
+          </td>
+          <td>
+            @item.Name
+          </td>
+          <td>
+            @item.MobileNumber
+          </td>
+          <td>
+            @item.EmailId
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+<script src="~/Scripts/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/buttons.bootstrap4.min.js"></script>
+<script src="~/Scripts/jszip.min.js"></script>
+<script src="~/Scripts/pdfmake.min.js"></script>
+<script src="~/Scripts/vfs_fonts.js"></script>
+<script src="~/Scripts/buttons.html5.min.js"></script>
+<script src="~/Scripts/buttons.print.min.js"></script>
+
+<link rel="stylesheet" href="~/Content/dataTables.bootstrap4.min.css" />
+<script type="text/javascript">
+    $(function () {
+
+
+        $.noConflict();
+
+
+      var table = $('#approvarTable').DataTable({
+            lengthChange: false,
+            buttons: [ 'excel', 'pdf']
+        });
+
+        table.buttons().container()
+          .appendTo('#approvarTable_wrapper .col-md-6:eq(0)');
+
+    });
+  $(document).ready(function () {
+    $(".isActive").change(function () {
+
+
+      if (confirm("Are you sure you want to De-Activate/Activate user?")) {
+        var currentObj = this;
+
+          $.get('@Url.Action("UpdateUserStatus", "Admin", null, Request.Url.Scheme)' + '?status=' + this.checked + "&agentid=" + this.attributes["agentid"].value, function (data) {
+
+            if (data != null) {
+              if (currentObj.checked) {
+                $(currentObj).parent().parent().parent().find('.btn-transfer').css("display", "block");
+                $(currentObj).parent().parent().parent().find('.btn-transfer').css("width", "75px");
+              } else {
+
+                $(currentObj).parent().parent().parent().find('.btn-transfer').css("display", "none");
+              }
+      }
+      else {
+
+      }
+      }).fail(function () {
+
+      });
+        }
+        else {
+          this.checked = !this.checked;
+          return false;
+        }
+
+
+    });
+  });
+</script>
